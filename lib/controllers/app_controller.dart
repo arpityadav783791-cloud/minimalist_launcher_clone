@@ -5,6 +5,8 @@ import '../models/app_info.dart';
 import '../services/native_app_service.dart';
 import 'hide_apps_controller.dart';
 
+import 'productivity_controller.dart';
+
 class AppController extends GetxController {
   final apps = <AppInfo>[].obs;
   final filteredApps = <AppInfo>[].obs;
@@ -64,6 +66,7 @@ class AppController extends GetxController {
   }
 
   Future<void> launch(String packageName) async {
-    await NativeAppService.launchApp(packageName);
+    final productivity = Get.find<ProductivityController>();
+    await productivity.handleAppLaunch(packageName);
   }
 }

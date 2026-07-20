@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:minimalist_launcher_clone/controllers/hide_apps_controller.dart';
+import 'package:minimalist_launcher_clone/controllers/productivity_controller.dart';
 import 'package:minimalist_launcher_clone/screens/launcher/hide_app_screen.dart';
 
 import '../../controllers/favorites_controller.dart';
@@ -17,6 +18,7 @@ class AppOptionsBottomSheet extends StatelessWidget {
 
   final FavoritesController favoritesController = Get.find<FavoritesController>();
   final HideAppsController hideAppsController = Get.put(HideAppsController());
+  final ProductivityController productivityController = Get.find<ProductivityController>();
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,7 @@ class AppOptionsBottomSheet extends StatelessWidget {
         () {
           final isFavorite = favoritesController.isFavorite(packageName);
           final isHidden = hideAppsController.isHidden(packageName);
+          final mindfulDelay = productivityController.isMindfulDelayEnabled(packageName);
 
           return Column(
             mainAxisSize: MainAxisSize.min,
@@ -66,7 +69,35 @@ class AppOptionsBottomSheet extends StatelessWidget {
 
                   Navigator.of(context).pop();
                 },
-              )
+              ),
+
+              const Divider(),
+
+              SwitchListTile(
+                secondary: const Icon(Icons.hourglass_bottom),
+                title: const Text('Mindful Delay'),
+                subtitle: const Text('Pause before opening this app'),
+                value: mindfulDelay,
+                onChanged: (_) async{
+                  await productivityController.toggleMindfulDelay(packageName);
+                },
+              ),
+
+              const Divider(),
+
+              SwitchListTile(
+                secondary: const Icon(Icons.block),
+                title: const Text("Focus Mode"),
+                subtitle: const Text(
+                  "Completely block this app",
+                ),
+                value: productivityController
+                    .isFocusModeEnabled(packageName),
+                onChanged: (_) async {
+                  await productivityController
+                      .toggleFocusMode(packageName);
+                },
+              ),
             ],
           );
         },

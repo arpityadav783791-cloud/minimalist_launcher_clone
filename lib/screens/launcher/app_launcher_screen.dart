@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:minimalist_launcher_clone/controllers/favorites_controller.dart';
+import 'package:minimalist_launcher_clone/controllers/productivity_controller.dart';
 
 import '../../controllers/app_controller.dart';
 import 'app_option_bottom_sheet.dart';
@@ -13,6 +14,7 @@ class AppLauncherScreen extends StatelessWidget {
   final AppController controller = Get.put(AppController());
   final FavoritesController favoritesController = Get.put(FavoritesController());
   final MindfulDelayController mindfulDelayController = Get.put(MindfulDelayController());
+  final ProductivityController productivityController = Get.put(ProductivityController());
 
   @override
   Widget build(BuildContext context) {

@@ -17,4 +17,9 @@ class NativeAppService {
       },
     );
   }
+
+  static Future<List<dynamic>> getUsageStats() async {
+    final result = await _channel.invokeMethod('getUsageStats');
+    return result;
+  }
 }
