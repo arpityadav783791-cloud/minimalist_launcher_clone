@@ -1,0 +1,44 @@
+name: minimalist_launcher_clone
+description: A Minimalist Launcher Clone built with Flutter.
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.8.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # State Management
+  get: ^4.7.2
+
+  # Installed Apps
+  # Permissions
+  permission_handler: ^12.0.1
+
+  # Local Storage
+  shared_preferences: ^2.5.3
+
+  # App Icons
+  flutter_launcher_icons: ^0.14.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: assets/icon/app_icon.png
