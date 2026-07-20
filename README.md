@@ -1,17 +1,37 @@
-# minimalist_launcher_clone
+# Minimalist Launcher
 
-A new Flutter project.
+A distraction-free Android launcher built with Flutter and Kotlin.
 
-## Getting Started
+## ✨ Features
 
-This project is a starting point for a Flutter application.
+- 🔍 Instant app search
+- ⭐ Favorites
+- 🙈 Hide apps
+- 🚀 Native app launching
+- 🎯 Minimal text-first UI
 
-A few resources to get you started if this is your first Flutter project:
+## 🚧 Upcoming Features
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+- Mindful Delay
+- Focus Mode
+- App Usage Statistics
+- App Limits
+- Themes
+- Backup & Restore
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🛠️ Tech Stack
+
+- Flutter
+- Dart
+- Kotlin
+- GetX
+- Method Channels
+- SharedPreferences
+
+## 📱 Screenshots
+
+Coming soon.
+
+## 📄 License
+
+MIT
