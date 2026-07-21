@@ -16,27 +16,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final List<Map<String, String>> pages = [
     {
       "title": "MINIMALIST",
-      "subtitle": "Less distraction.\nMore focus.",
+      "headline": "Less distraction.\nMore focus.",
       "description":
           "A launcher designed to help you\nspend less time on your phone.",
       "button": "NEXT",
     },
     {
       "title": "TEXT ONLY",
-      "subtitle": "No icons.\nNo colors.",
+      "headline": "No icons.\nNo colors.",
       "description":
           "Only what matters.\n\n• Text-only launcher\n• Instant search\n• Faster access",
       "button": "NEXT",
     },
     {
       "title": "STAY PRODUCTIVE",
-      "subtitle": "Build better habits.",
+      "headline": "Build better habits.",
       "description":
           "Mindful Delay\nFocus Mode\nUsage Limits\nHide Apps\nScreen Time Dashboard",
       "button": "Continue",
     },
     {
-      "title": "almost ready",
+    "title": "almost ready",
       "headline": "Let's set\nthings up.",
       "description":
           "We'll ask for a few permissions so Minimalist can become your default launcher.",

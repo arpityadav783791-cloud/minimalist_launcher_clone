@@ -6,8 +6,11 @@ class DefaultLauncherScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -15,32 +18,31 @@ class DefaultLauncherScreen extends StatelessWidget {
             children: [
               const Spacer(),
 
-              const Icon(
+              Icon(
                 Icons.home_outlined,
                 size: 90,
-                color: Colors.black,
+                color: colors.primary,
               ),
 
               const SizedBox(height: 40),
 
-              const Text(
+              Text(
                 'Set Minimalist as your\nDefault Launcher',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 30,
+                style: theme.textTheme.displaySmall?.copyWith(
                   fontWeight: FontWeight.w300,
                   height: 1.3,
+                  color: colors.onSurface,
                 ),
               ),
 
               const SizedBox(height: 20),
 
-              const Text(
+              Text(
                 'This lets Minimalist replace your current home screen and provide a distraction-free experience.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black54,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: colors.onSurface.withValues(alpha: 0.65),
                   height: 1.6,
                 ),
               ),
@@ -49,19 +51,24 @@ class DefaultLauncherScreen extends StatelessWidget {
 
               SizedBox(
                 width: double.infinity,
-                height: 55,
-                child: ElevatedButton(
+                height: 56,
+                child: FilledButton(
                   onPressed: () {
                     // TODO: Open Default Launcher Settings
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                  ),
-                  child: const Text(
-                    'SET AS DEFAULT',
-                    style: TextStyle(letterSpacing: 1),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Set as Default',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Icon(Icons.arrow_forward_rounded),
+                    ],
                   ),
                 ),
               ),
@@ -70,7 +77,7 @@ class DefaultLauncherScreen extends StatelessWidget {
 
               SizedBox(
                 width: double.infinity,
-                height: 55,
+                height: 56,
                 child: OutlinedButton(
                   onPressed: () {
                     Navigator.pushReplacement(
@@ -80,7 +87,18 @@ class DefaultLauncherScreen extends StatelessWidget {
                       ),
                     );
                   },
-                  child: const Text('SKIP'),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: colors.outline),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: Text(
+                    'Skip',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: colors.onSurface,
+                    ),
+                  ),
                 ),
               ),
 

@@ -35,116 +35,123 @@ class AppLauncherScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-
-      appBar: AppBar(
-        elevation: 0,
-
-        title: Container(
-          height: AppConstants.searchBarHeight,
-
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-          ),
-
-          decoration: BoxDecoration(
-            color: AppColors.searchBar(context),
-            borderRadius: BorderRadius.circular(
-              AppRadius.md,
+    return GestureDetector(
+      onVerticalDragEnd: (details){
+        if((details.primaryVelocity ?? 0) > 0){
+          Navigator.pop(context);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background(context),
+      
+        appBar: AppBar(
+          elevation: 0,
+      
+          title: Container(
+            height: AppConstants.searchBarHeight,
+      
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
             ),
-          ),
-
-          alignment: Alignment.center,
-
-          child: TextField(
-            onChanged: controller.search,
-
-            style: TextStyle(
-              color: AppColors.text(context),
-            ),
-
-            cursorColor: AppColors.primary(context),
-
-            decoration: InputDecoration(
-              border: InputBorder.none,
-
-              icon: Icon(
-                Icons.search,
-                color: AppColors.secondaryText(context),
+      
+            decoration: BoxDecoration(
+              color: AppColors.searchBar(context),
+              borderRadius: BorderRadius.circular(
+                AppRadius.md,
               ),
-
-              hintText: "Search apps...",
-
-              hintStyle: TextStyle(
-                color: AppColors.secondaryText(context),
+            ),
+      
+            alignment: Alignment.center,
+      
+            child: TextField(
+              onChanged: controller.search,
+      
+              style: TextStyle(
+                color: AppColors.text(context),
+              ),
+      
+              cursorColor: AppColors.primary(context),
+      
+              decoration: InputDecoration(
+                border: InputBorder.none,
+      
+                icon: Icon(
+                  Icons.search,
+                  color: AppColors.secondaryText(context),
+                ),
+      
+                hintText: "Search apps...",
+      
+                hintStyle: TextStyle(
+                  color: AppColors.secondaryText(context),
+                ),
               ),
             ),
           ),
         ),
-      ),
-
-      body: Obx(() {
-        if (controller.loading.value) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
-        if (controller.filteredApps.isEmpty) {
-          return Center(
-            child: Text(
-              "No apps found",
-              style: AppTextStyles.heading(context),
-            ),
-          );
-        }
-
-        return ListView.separated(
-          physics: const BouncingScrollPhysics(),
-
-          itemCount: controller.filteredApps.length,
-
-          separatorBuilder: (_, __) => Divider(
-            height: 1,
-            color: AppColors.divider(context),
-          ),
-
-          itemBuilder: (context, index) {
-            final app = controller.filteredApps[index];
-
-            return ListTile(
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-              ),
-
-              title: Text(
-                app.appName,
+      
+        body: Obx(() {
+          if (controller.loading.value) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+      
+          if (controller.filteredApps.isEmpty) {
+            return Center(
+              child: Text(
+                "No apps found",
                 style: AppTextStyles.heading(context),
               ),
-
-              onTap: () {
-                controller.launch(app.packageName);
-              },
-
-              onLongPress: () {
-                showModalBottomSheet(
-                  context: context,
-
-                  showDragHandle: true,
-
-                  backgroundColor: AppColors.bottomSheet(context),
-
-                  builder: (_) => AppOptionsBottomSheet(
-                    appName: app.appName,
-                    packageName: app.packageName,
-                  ),
-                );
-              },
             );
-          },
-        );
-      }),
+          }
+      
+          return ListView.separated(
+            physics: const BouncingScrollPhysics(),
+      
+            itemCount: controller.filteredApps.length,
+      
+            separatorBuilder: (_, __) => Divider(
+              height: 1,
+              color: AppColors.divider(context),
+            ),
+      
+            itemBuilder: (context, index) {
+              final app = controller.filteredApps[index];
+      
+              return ListTile(
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                ),
+      
+                title: Text(
+                  app.appName,
+                  style: AppTextStyles.heading(context),
+                ),
+      
+                onTap: () {
+                  controller.launch(app.packageName);
+                },
+      
+                onLongPress: () {
+                  showModalBottomSheet(
+                    context: context,
+      
+                    showDragHandle: true,
+      
+                    backgroundColor: AppColors.bottomSheet(context),
+      
+                    builder: (_) => AppOptionsBottomSheet(
+                      appName: app.appName,
+                      packageName: app.packageName,
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        }),
+      ),
     );
   }
 }

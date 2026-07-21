@@ -15,10 +15,35 @@ class HomeScreen extends StatelessWidget {
     return GestureDetector(
       onVerticalDragEnd: (details) {
         if ((details.primaryVelocity ?? 0) < 0) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => AppLauncherScreen(),
+          Navigator.of(context).push(
+            PageRouteBuilder(
+              transitionDuration: const Duration(milliseconds: 250),
+              reverseTransitionDuration: const Duration(milliseconds: 250),
+              pageBuilder: (_, animation, secondaryAnimation) =>
+                  AppLauncherScreen(),
+              transitionsBuilder: (
+                context,
+                animation,
+                secondaryAnimation,
+                child,
+              ) {
+                const begin = Offset(0, 1);
+                const end = Offset.zero;
+
+                final curve = CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeOutCubic,
+                  reverseCurve: Curves.easeInCubic,
+                );
+
+                return SlideTransition(
+                  position: Tween<Offset>(
+                    begin: begin,
+                    end: end,
+                  ).animate(curve),
+                  child: child,
+                );
+              },
             ),
           );
         }

@@ -5,11 +5,9 @@ import 'package:minimalist_launcher_clone/theme/app_colors.dart';
 import 'package:minimalist_launcher_clone/theme/app_spacing.dart';
 import 'package:minimalist_launcher_clone/theme/app_text_styles.dart';
 
-import '../backup_restore/backup_restore_screen.dart';
 import '../launcher/hide_app_screen.dart';
 import '../themes/themes_screen.dart';
 import 'about_screen.dart';
-import 'font_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -40,28 +38,6 @@ class SettingsScreen extends StatelessWidget {
             title: "Themes",
             onTap: () {
               Get.to(() => const ThemesScreen());
-            },
-          ),
-
-          _divider(context),
-
-          _tile(
-            context,
-            icon: Icons.font_download_outlined,
-            title: "Font",
-            onTap: () {
-              Get.to(() => const FontScreen());
-            },
-          ),
-
-          _divider(context),
-
-          _tile(
-            context,
-            icon: Icons.backup_outlined,
-            title: "Backup & Restore",
-            onTap: () {
-              Get.to(() => const BackupRestoreScreen());
             },
           ),
 
