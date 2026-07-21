@@ -4,8 +4,8 @@ import 'package:minimalist_launcher_clone/screens/favorites/favorites_screen.dar
 import 'package:minimalist_launcher_clone/screens/launcher/app_launcher_screen.dart';
 import 'package:minimalist_launcher_clone/screens/settings/settings_screen.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class DashboardScreen extends StatelessWidget {
+  const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
