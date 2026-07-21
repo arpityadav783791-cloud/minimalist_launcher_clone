@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:get/get.dart';
 
 import '../services/hide_apps_service.dart';
@@ -27,6 +29,13 @@ class HideAppsController extends GetxController {
     }
 
     await _service.saveHiddenApps(hiddenApps);
+
+    refreshAppList();
+  }
+
+  Future<void> setHiddenApps(List<String> packages) async{
+    hiddenApps.assignAll(packages);
+    await _service.saveHiddenApps(hiddenApps.toList());
 
     refreshAppList();
   }

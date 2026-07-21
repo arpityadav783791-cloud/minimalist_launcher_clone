@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:minimalist_launcher_clone/controllers/mindful_delay_controller.dart';
+import 'package:minimalist_launcher_clone/controllers/screen_time_controller.dart';
 import 'package:minimalist_launcher_clone/screens/focus_mode/focus_mode_screen.dart';
 import 'package:minimalist_launcher_clone/screens/mindful_delay/mindful_delay_screen.dart';
 import 'package:minimalist_launcher_clone/services/native_app_service.dart';
@@ -33,12 +34,21 @@ class ProductivityController extends GetxController {
 
     // STEP 2
     // Daily Limit
-    if (config["dailyLimit"] > 0 &&
-        config["todayUsage"] >= config["dailyLimit"]) {
+    final screenTimeController =
+        Get.find<ScreenTimeController>();
+
+    final todayUsage =
+        screenTimeController.getUsage(packageName);
+
+    if (isDailyLimitReached(
+        packageName,
+        todayUsage,
+    )) {
       Get.snackbar(
         "Daily Limit",
         "You've reached today's limit.",
       );
+
       return;
     }
 
@@ -56,6 +66,7 @@ class ProductivityController extends GetxController {
     // Launch app
     await NativeAppService.launchApp(packageName);
   }
+
   Future<void> loadSettings() async {
 
     final prefs = await SharedPreferences.getInstance();
@@ -106,6 +117,51 @@ class ProductivityController extends GetxController {
     settings.refresh();
 
     await saveSettings();
+  }
+
+  void setDailyLimit(
+    String packageName,
+    int minutes,
+  ) {
+    final config = getConfig(packageName);
+
+    config["dailyLimit"] = minutes;
+
+    updateConfig(packageName, config);
+  }
+
+  int getDailyLimit(
+    String packageName,
+  ) {
+    final config = getConfig(packageName);
+
+    return config["dailyLimit"] ?? 0;
+  }
+
+  bool isDailyLimitReached(
+    String packageName,
+    int todayUsageMinutes,
+  ) {
+    final limit = getDailyLimit(packageName);
+
+    if (limit == 0) {
+      return false;
+    }
+
+    return todayUsageMinutes >= limit;
+  }
+
+  int remainingMinutes(
+    String packageName,
+    int todayUsageMinutes,
+  ) {
+    final limit = getDailyLimit(packageName);
+
+    if (limit == 0) {
+      return -1;
+    }
+
+    return limit - todayUsageMinutes;
   }
 
   bool isMindfulDelayEnabled(String packageName) {
