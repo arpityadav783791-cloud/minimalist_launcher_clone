@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:minimalist_launcher_clone/screens/backup_restore/backup_restore_screen.dart';
-import 'package:minimalist_launcher_clone/screens/launcher/hide_app_screen.dart';
-import 'package:minimalist_launcher_clone/screens/settings/about_screen.dart';
-import 'package:minimalist_launcher_clone/screens/themes/themes_screen.dart';
+
+import 'package:minimalist_launcher_clone/theme/app_colors.dart';
+import 'package:minimalist_launcher_clone/theme/app_spacing.dart';
+import 'package:minimalist_launcher_clone/theme/app_text_styles.dart';
+
+import '../backup_restore/backup_restore_screen.dart';
+import '../launcher/hide_app_screen.dart';
+import '../themes/themes_screen.dart';
+import 'about_screen.dart';
 import 'font_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -12,107 +17,155 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background(context),
+
       appBar: AppBar(
-        title: const Text("Settings"),
+        elevation: 0,
         centerTitle: true,
+        backgroundColor: AppColors.background(context),
+        title: Text(
+          "Settings",
+          style: AppTextStyles.heading(context),
+        ),
       ),
+
       body: ListView(
         children: [
-          ListTile(
-            leading: const Icon(Icons.palette_outlined),
-            title: const Text("Themes"),
-            trailing: const Icon(Icons.chevron_right),
+
+          const SizedBox(height: AppSpacing.sm),
+
+          _tile(
+            context,
+            icon: Icons.palette_outlined,
+            title: "Themes",
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const ThemesScreen(),
-                ),
-              );
+              Get.to(() => const ThemesScreen());
             },
           ),
 
-          ListTile(
-            leading: const Icon(Icons.font_download_outlined),
-            title: const Text("Font"),
-            trailing: const Icon(Icons.chevron_right),
+          _divider(context),
+
+          _tile(
+            context,
+            icon: Icons.font_download_outlined,
+            title: "Font",
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const FontScreen(),
-                ),
-              );
+              Get.to(() => const FontScreen());
             },
           ),
 
-          ListTile(
-            leading: const Icon(Icons.backup_outlined),
-            title: const Text("Backup & Restore"),
-            trailing: const Icon(Icons.chevron_right),
+          _divider(context),
+
+          _tile(
+            context,
+            icon: Icons.backup_outlined,
+            title: "Backup & Restore",
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const BackupRestoreScreen(),
-                ),
-              );
+              Get.to(() => const BackupRestoreScreen());
             },
           ),
 
-          ListTile(
-            leading: const Icon(Icons.visibility_outlined),
-            title: const Text("Unhide Apps"),
-            subtitle: const Text("Manage hidden applications"),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: (){
-              Navigator.push(
-                context, 
-                MaterialPageRoute(
-                  builder: (_) => const UnHideAppScreen(),
-                ),
-              );
+          _divider(context),
+
+          _tile(
+            context,
+            icon: Icons.visibility_outlined,
+            title: "Unhide Apps",
+            subtitle: "Manage hidden applications",
+            onTap: () {
+              Get.to(() => const UnHideAppScreen());
             },
           ),
 
-          ListTile(
-            leading: const Icon(Icons.notifications_outlined),
-            title: const Text("Notification Filter"),
-            trailing: const Icon(Icons.chevron_right),
+          _divider(context),
+
+          _tile(
+            context,
+            icon: Icons.notifications_outlined,
+            title: "Notification Filter",
             onTap: () {},
           ),
 
-          ListTile(
-            leading: const Icon(Icons.apps_outlined),
-            title: const Text("Default Launcher"),
-            trailing: const Icon(Icons.chevron_right),
+          _divider(context),
+
+          _tile(
+            context,
+            icon: Icons.apps_outlined,
+            title: "Default Launcher",
             onTap: () {},
           ),
 
-          ListTile(
-            leading: const Icon(Icons.security_outlined),
-            title: const Text("Permissions"),
-            trailing: const Icon(Icons.chevron_right),
+          _divider(context),
+
+          _tile(
+            context,
+            icon: Icons.security_outlined,
+            title: "Permissions",
             onTap: () {},
           ),
 
-          const Divider(),
+          const SizedBox(height: AppSpacing.md),
 
-          ListTile(
-            leading: const Icon(Icons.info_outline),
-            title: const Text("About"),
-            trailing: const Icon(Icons.chevron_right),
+          Divider(
+            color: AppColors.divider(context),
+            height: 1,
+          ),
+
+          const SizedBox(height: AppSpacing.md),
+
+          _tile(
+            context,
+            icon: Icons.info_outline,
+            title: "About",
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const AboutScreen(),
-                ),
-              );
+              Get.to(() => const AboutScreen());
             },
           ),
+
+          const SizedBox(height: AppSpacing.lg),
         ],
       ),
+    );
+  }
+
+  Widget _divider(BuildContext context) {
+    return Divider(
+      height: 1,
+      color: AppColors.divider(context),
+    );
+  }
+
+  Widget _tile(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    String? subtitle,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: AppColors.icon(context),
+      ),
+
+      title: Text(
+        title,
+        style: AppTextStyles.body(context),
+      ),
+
+      subtitle: subtitle == null
+          ? null
+          : Text(
+              subtitle,
+              style: AppTextStyles.caption(context),
+            ),
+
+      trailing: Icon(
+        Icons.chevron_right,
+        color: AppColors.secondaryText(context),
+      ),
+
+      onTap: onTap,
     );
   }
 }

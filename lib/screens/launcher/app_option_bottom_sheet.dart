@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import 'package:minimalist_launcher_clone/controllers/favorites_controller.dart';
 import 'package:minimalist_launcher_clone/controllers/hide_apps_controller.dart';
 import 'package:minimalist_launcher_clone/controllers/productivity_controller.dart';
-import 'package:minimalist_launcher_clone/screens/launcher/hide_app_screen.dart';
 
-import '../../controllers/favorites_controller.dart';
+import 'package:minimalist_launcher_clone/theme/app_colors.dart';
+import 'package:minimalist_launcher_clone/theme/app_spacing.dart';
+import 'package:minimalist_launcher_clone/theme/app_text_styles.dart';
 
 class AppOptionsBottomSheet extends StatelessWidget {
   final String appName;
@@ -16,80 +19,154 @@ class AppOptionsBottomSheet extends StatelessWidget {
     required this.packageName,
   });
 
-  final FavoritesController favoritesController = Get.find<FavoritesController>();
-  final HideAppsController hideAppsController = Get.put(HideAppsController());
-  final ProductivityController productivityController = Get.find<ProductivityController>();
+  final FavoritesController favoritesController =
+      Get.find<FavoritesController>();
+
+  final HideAppsController hideAppsController = Get.find<HideAppsController>();
+
+  final ProductivityController productivityController =
+      Get.find<ProductivityController>();
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Obx(
-        () {
-          final isFavorite = favoritesController.isFavorite(packageName);
-          final isHidden = hideAppsController.isHidden(packageName);
-          final mindfulDelay = productivityController.isMindfulDelayEnabled(packageName);
+      child: Obx(() {
+        final isFavorite =
+            favoritesController.isFavorite(packageName);
 
-          return Column(
+        final isHidden =
+            hideAppsController.isHidden(packageName);
+
+        final mindfulDelay =
+            productivityController.isMindfulDelayEnabled(packageName);
+
+        return Container(
+          color: AppColors.bottomSheet(context),
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ListTile(
-                title: Text(appName),
-                subtitle: const Text("Application"),
+              const SizedBox(height: AppSpacing.sm),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      appName,
+                      style: AppTextStyles.heading(context),
+                      textAlign: TextAlign.center,
+                    ),
+
+                    const SizedBox(height: 4),
+
+                    Text(
+                      "Application",
+                      style: AppTextStyles.caption(context),
+                    ),
+                  ],
+                ),
               ),
 
-              const Divider(),
+              const SizedBox(height: AppSpacing.md),
+
+              Divider(
+                color: AppColors.divider(context),
+                height: 1,
+              ),
 
               ListTile(
                 leading: Icon(
                   isFavorite
                       ? Icons.star
                       : Icons.star_border,
+                  color: AppColors.icon(context),
                 ),
                 title: Text(
                   isFavorite
                       ? "Remove from Favorites"
                       : "Add to Favorites",
+                  style: AppTextStyles.body(context),
                 ),
                 onTap: () async {
                   await favoritesController.toggleFavorite(
                     packageName,
                   );
 
-                  Navigator.pop(context);
+                  Get.back();
                 },
               ),
 
-              const Divider(),
+              Divider(
+                color: AppColors.divider(context),
+                height: 1,
+              ),
 
               ListTile(
-                leading: Icon(isHidden ? Icons.visibility:Icons.visibility_off),
-                title: Text(isHidden?'Unhide App':'Hide App'),
-                onTap: ()async{
-                  await hideAppsController.toggleHidden(packageName);
+                leading: Icon(
+                  isHidden
+                      ? Icons.visibility
+                      : Icons.visibility_off,
+                  color: AppColors.icon(context),
+                ),
+                title: Text(
+                  isHidden
+                      ? "Unhide App"
+                      : "Hide App",
+                  style: AppTextStyles.body(context),
+                ),
+                onTap: () async {
+                  await hideAppsController.toggleHidden(
+                    packageName,
+                  );
 
-                  Navigator.of(context).pop();
+                  Get.back();
                 },
               ),
 
-              const Divider(),
+              Divider(
+                color: AppColors.divider(context),
+                height: 1,
+              ),
 
               SwitchListTile(
-                secondary: const Icon(Icons.hourglass_bottom),
-                title: const Text('Mindful Delay'),
-                subtitle: const Text('Pause before opening this app'),
+                secondary: Icon(
+                  Icons.hourglass_bottom,
+                  color: AppColors.icon(context),
+                ),
+                title: Text(
+                  "Mindful Delay",
+                  style: AppTextStyles.body(context),
+                ),
+                subtitle: Text(
+                  "Pause before opening this app",
+                  style: AppTextStyles.caption(context),
+                ),
                 value: mindfulDelay,
-                onChanged: (_) async{
-                  await productivityController.toggleMindfulDelay(packageName);
+                onChanged: (_) async {
+                  await productivityController
+                      .toggleMindfulDelay(packageName);
                 },
               ),
 
-              const Divider(),
+              Divider(
+                color: AppColors.divider(context),
+                height: 1,
+              ),
 
               SwitchListTile(
-                secondary: const Icon(Icons.block),
-                title: const Text("Focus Mode"),
-                subtitle: const Text(
+                secondary: Icon(
+                  Icons.block,
+                  color: AppColors.icon(context),
+                ),
+                title: Text(
+                  "Focus Mode",
+                  style: AppTextStyles.body(context),
+                ),
+                subtitle: Text(
                   "Completely block this app",
+                  style: AppTextStyles.caption(context),
                 ),
                 value: productivityController
                     .isFocusModeEnabled(packageName),
@@ -98,10 +175,12 @@ class AppOptionsBottomSheet extends StatelessWidget {
                       .toggleFocusMode(packageName);
                 },
               ),
+
+              const SizedBox(height: AppSpacing.md),
             ],
-          );
-        },
-      ),
+          ),
+        );
+      }),
     );
   }
 }

@@ -1,47 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class ThemesScreen extends StatefulWidget {
+import '../../controllers/theme_controller.dart';
+
+class ThemesScreen extends StatelessWidget {
   const ThemesScreen({super.key});
 
   @override
-  State<ThemesScreen> createState() => _ThemesScreenState();
-}
-
-class _ThemesScreenState extends State<ThemesScreen> {
-  String selectedTheme = "Light";
-
-  final themes = [
-    "Light",
-    "Dark",
-    "AMOLED Black",
-    "Sepia",
-  ];
-
-  @override
   Widget build(BuildContext context) {
+    final ThemeController controller = Get.find<ThemeController>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Themes"),
         centerTitle: true,
       ),
-      body: RadioGroup<String>(
-        groupValue: selectedTheme,
-        onChanged: (String? value) {
-          if (value != null) {
-            setState(() {
-              selectedTheme = value;
-            });
-          }
+      body: GetBuilder<ThemeController>(
+        builder: (_) {
+          return ListView(
+            children: [
+              RadioListTile<AppThemeMode>(
+                title: const Text("Light"),
+                value: AppThemeMode.light,
+                groupValue: controller.selectedTheme.value,
+                onChanged: (value) {
+                  controller.setTheme(value!);
+                },
+              ),
+
+              RadioListTile<AppThemeMode>(
+                title: const Text("Dark"),
+                value: AppThemeMode.dark,
+                groupValue: controller.selectedTheme.value,
+                onChanged: (value) {
+                  controller.setTheme(value!);
+                },
+              ),
+
+              RadioListTile<AppThemeMode>(
+                title: const Text("Clockwise"),
+                subtitle: const Text(
+                  "Automatically switches:\n"
+                  "7:00 AM – 7:00 PM → Light\n"
+                  "7:00 PM – 7:00 AM → Dark",
+                ),
+                value: AppThemeMode.clockwise,
+                groupValue: controller.selectedTheme.value,
+                onChanged: (value) {
+                  controller.setTheme(value!);
+                },
+              ),
+            ],
+          );
         },
-        child: ListView.builder(
-          itemCount: themes.length,
-          itemBuilder: (context, index) {
-            return RadioListTile<String>(
-              title: Text(themes[index]),
-              value: themes[index],
-            );
-          },
-        ),
       ),
     );
   }

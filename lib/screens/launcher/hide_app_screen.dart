@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'package:minimalist_launcher_clone/theme/app_colors.dart';
+import 'package:minimalist_launcher_clone/theme/app_spacing.dart';
+import 'package:minimalist_launcher_clone/theme/app_text_styles.dart';
+
 import '../../controllers/app_controller.dart';
 import '../../controllers/hide_apps_controller.dart';
 import '../../models/app_info.dart';
@@ -62,8 +66,13 @@ class _UnHideAppScreenState extends State<UnHideAppScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Unhide Apps"),
         centerTitle: true,
+        backgroundColor: AppColors.background(context),
+        elevation: 0,
+        title: Text(
+          "Unhide Apps",
+          style: AppTextStyles.heading(context),
+        ),
       ),
       body: hiddenApps.isEmpty
           ? Center(
@@ -71,25 +80,22 @@ class _UnHideAppScreenState extends State<UnHideAppScreen> {
                 padding: const EdgeInsets.all(24),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Icon(
                       Icons.visibility_outlined,
                       size: 64,
-                      color: Colors.grey,
+                      color: AppColors.secondaryText(context),
                     ),
                     SizedBox(height: 16),
                     Text(
                       "No Hidden Apps",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: AppTextStyles.heading(context),
                     ),
                     SizedBox(height: 8),
                     Text(
                       "Hide an app from the launcher and it will appear here.",
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.grey),
+                      style: AppTextStyles.caption(context),
                     ),
                   ],
                 ),
@@ -101,7 +107,10 @@ class _UnHideAppScreenState extends State<UnHideAppScreen> {
                 final app = hiddenApps[index];
 
                 return CheckboxListTile(
-                  title: Text(app.appName),
+                  title: Text(
+                    app.appName,
+                    style: AppTextStyles.body(context),
+                  ),
                   value: selectedPackages.contains(app.packageName),
                   onChanged: (value) => _onChanged(value, app),
                 );
@@ -112,7 +121,7 @@ class _UnHideAppScreenState extends State<UnHideAppScreen> {
         child: hasChanges
             ? SafeArea(
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   child: SizedBox(
                     height: 50,
                     width: double.infinity,

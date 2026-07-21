@@ -1,59 +1,79 @@
 import 'package:flutter/material.dart';
 
+import 'package:minimalist_launcher_clone/theme/app_colors.dart';
+import 'package:minimalist_launcher_clone/theme/app_spacing.dart';
+import 'package:minimalist_launcher_clone/theme/app_text_styles.dart';
+
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("About"),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 20),
+      backgroundColor: AppColors.background(context),
 
-            const Icon(
-              Icons.apps,
+      appBar: AppBar(
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: AppColors.background(context),
+        title: Text(
+          "About",
+          style: AppTextStyles.heading(context),
+        ),
+      ),
+
+      body: Padding(
+        padding: const EdgeInsets.all(AppSpacing.xl),
+        child: Column(
+          children: [
+            const SizedBox(height: AppSpacing.lg),
+
+            Icon(
+              Icons.apps_rounded,
               size: 80,
+              color: AppColors.icon(context),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg),
 
-            const Text(
+            Text(
               "Minimalist Launcher Clone",
-              style: TextStyle(
+              textAlign: TextAlign.center,
+              style: AppTextStyles.heading(context).copyWith(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
 
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
 
-            const Text(
+            Text(
               "Version 1.0.0",
-              style: TextStyle(fontSize: 16),
+              style: AppTextStyles.caption(context),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: AppSpacing.xl),
 
-            const Text(
+            Text(
               "A distraction-free launcher focused on productivity and mindful phone usage.",
               textAlign: TextAlign.center,
+              style: AppTextStyles.body(context),
             ),
 
             const Spacer(),
 
-            const Text(
-              "Made with Flutter ❤️",
-              style: TextStyle(fontSize: 16),
+            Divider(
+              color: AppColors.divider(context),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.md),
+
+            Text(
+              "Made with Flutter ❤️",
+              style: AppTextStyles.caption(context),
+            ),
+
+            const SizedBox(height: AppSpacing.md),
           ],
         ),
       ),

@@ -3,6 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'package:minimalist_launcher_clone/theme/app_colors.dart';
+import 'package:minimalist_launcher_clone/theme/app_spacing.dart';
+import 'package:minimalist_launcher_clone/theme/app_text_styles.dart';
+
 import '../../services/native_app_service.dart';
 
 class MindfulDelayScreen extends StatefulWidget {
@@ -33,7 +37,6 @@ class _MindfulDelayScreenState extends State<MindfulDelayScreen> {
     super.initState();
 
     seconds = 5;
-
     quote = (quotes..shuffle()).first;
 
     timer = Timer.periodic(
@@ -47,7 +50,6 @@ class _MindfulDelayScreenState extends State<MindfulDelayScreen> {
           if (mounted) {
             Get.back();
           }
-
           return;
         }
 
@@ -64,49 +66,61 @@ class _MindfulDelayScreenState extends State<MindfulDelayScreen> {
     super.dispose();
   }
 
+  Future<void> _openNow() async {
+    timer?.cancel();
+
+    await NativeAppService.launchApp(packageName);
+
+    if (mounted) {
+      Get.back();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background(context),
 
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(32),
+            padding: const EdgeInsets.all(AppSpacing.xl),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Icon(
+                  Icons.self_improvement_outlined,
+                  size: 72,
+                  color: AppColors.icon(context),
+                ),
+
+                const SizedBox(height: AppSpacing.xl),
+
                 Text(
                   "$seconds",
-                  style: const TextStyle(
+                  style: AppTextStyles.heading(context).copyWith(
                     fontSize: 80,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
 
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.lg),
 
                 Text(
                   quote,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 22,
-                  ),
+                  style: AppTextStyles.body(context),
                 ),
 
-                const SizedBox(height: 50),
+                const SizedBox(height: AppSpacing.xxl),
 
-                ElevatedButton(
-                  onPressed: () async {
-                    timer?.cancel();
-
-                    await NativeAppService.launchApp(packageName);
-
-                    if (mounted) {
-                      Get.back();
-                    }
-                  },
-                  child: const Text("Open Now"),
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton(
+                    onPressed: _openNow,
+                    child: const Text("Open Now"),
+                  ),
                 ),
               ],
             ),

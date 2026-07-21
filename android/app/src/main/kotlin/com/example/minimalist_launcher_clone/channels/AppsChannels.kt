@@ -44,15 +44,24 @@ class AppsChannel(
 
         val pm = context.packageManager
 
-        val intent = Intent(Intent.ACTION_MAIN, null)
-        intent.addCategory(Intent.CATEGORY_LAUNCHER)
+        val installedApps = pm.getInstalledApplications(
+            PackageManager.MATCH_ALL
+        )
 
-        val apps = pm.queryIntentActivities(intent, 0)
-            .map {
-                mapOf(
-                    "appName" to it.loadLabel(pm).toString(),
-                    "packageName" to it.activityInfo.packageName,
-                )
+        val apps = installedApps
+            .mapNotNull { app ->
+
+                val launchIntent =
+                    pm.getLaunchIntentForPackage(app.packageName)
+    
+                if (launchIntent == null) {
+                    null
+                } else {
+                    mapOf(
+                        "appName" to pm.getApplicationLabel(app).toString(),
+                        "packageName" to app.packageName,
+                    )
+                }
             }
             .distinctBy { it["packageName"] }
             .sortedBy { it["appName"].toString().lowercase() }
