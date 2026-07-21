@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:minimalist_launcher_clone/screens/launcher/dashboard_screen.dart';
+import 'package:minimalist_launcher_clone/screens/launcher/home_screen.dart';
 
 class DefaultLauncherScreen extends StatelessWidget {
   const DefaultLauncherScreen({super.key});
@@ -76,7 +76,7 @@ class DefaultLauncherScreen extends StatelessWidget {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const DashboardScreen(),
+                        builder: (_) => const HomeScreen(),
                       ),
                     );
                   },
