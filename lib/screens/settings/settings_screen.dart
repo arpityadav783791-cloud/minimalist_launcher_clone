@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:minimalist_launcher_clone/screens/backup_restore/backup_restore_screen.dart';
+import 'package:minimalist_launcher_clone/screens/launcher/hide_app_screen.dart';
 import 'package:minimalist_launcher_clone/screens/settings/about_screen.dart';
 import 'package:minimalist_launcher_clone/screens/themes/themes_screen.dart';
 import 'font_screen.dart';
@@ -53,6 +55,21 @@ class SettingsScreen extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (_) => const BackupRestoreScreen(),
+                ),
+              );
+            },
+          ),
+
+          ListTile(
+            leading: const Icon(Icons.visibility_outlined),
+            title: const Text("Unhide Apps"),
+            subtitle: const Text("Manage hidden applications"),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: (){
+              Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (_) => const UnHideAppScreen(),
                 ),
               );
             },
