@@ -13,7 +13,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   int currentPage = 0;
 
-  final List<Map<String, dynamic>> pages = [
+  final List<Map<String, String>> pages = [
     {
       "title": "MINIMALIST",
       "subtitle": "Less distraction.\nMore focus.",
@@ -32,12 +32,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       "title": "STAY PRODUCTIVE",
       "subtitle": "Build better habits.",
       "description":
-          "✓ Screen Time Dashboard\n\n"
-          "✓ Mindful Delay\n\n"
-          "✓ Usage Limits\n\n"
-          "✓ Scheduled Blocking\n\n"
-          "✓ Notification Filter",
-      "button": "GET STARTED",
+          "Mindful Delay\nFocus Mode\nUsage Limits\nHide Apps\nScreen Time Dashboard",
+      "button": "Continue",
+    },
+    {
+      "title": "almost ready",
+      "headline": "Let's set\nthings up.",
+      "description":
+          "We'll ask for a few permissions so Minimalist can become your default launcher.",
+      "button": "Get Started",
     },
   ];
 
@@ -45,11 +48,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (currentPage < pages.length - 1) {
       _controller.nextPage(
         duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
+        curve: Curves.easeOut,
       );
     } else {
       Navigator.pushReplacement(
-        context, 
+        context,
         MaterialPageRoute(
           builder: (_) => const PermissionsScreen(),
         ),
@@ -59,55 +62,60 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: PageView.builder(
           controller: _controller,
           itemCount: pages.length,
-          onPageChanged: (value) {
+          onPageChanged: (index) {
             setState(() {
-              currentPage = value;
+              currentPage = index;
             });
           },
           itemBuilder: (context, index) {
             final page = pages[index];
 
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 32,
+                vertical: 24,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Spacer(),
 
                   Text(
-                    page["title"],
-                    style: const TextStyle(
-                      fontSize: 34,
+                    page["title"]!,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      letterSpacing: 3,
+                      fontWeight: FontWeight.w400,
+                      color: colors.primary,
+                    ),
+                  ),
+
+                  const SizedBox(height: 28),
+
+                  Text(
+                    page["headline"]!,
+                    style: theme.textTheme.displaySmall?.copyWith(
                       fontWeight: FontWeight.w300,
-                      letterSpacing: 5,
+                      height: 1.15,
+                      color: colors.onSurface,
                     ),
                   ),
 
-                  const SizedBox(height: 35),
+                  const SizedBox(height: 28),
 
                   Text(
-                    page["subtitle"],
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w500,
-                      height: 1.3,
-                    ),
-                  ),
-
-                  const SizedBox(height: 25),
-
-                  Text(
-                    page["description"],
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.black54,
-                      height: 1.7,
+                    page["description"]!,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: colors.onSurface.withValues(alpha: 0.70),
+                      height: 1.8,
                     ),
                   ),
 
@@ -119,44 +127,43 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       (dot) => AnimatedContainer(
                         duration: const Duration(milliseconds: 250),
                         margin: const EdgeInsets.only(right: 8),
-                        width: currentPage == dot ? 28 : 8,
+                        width: currentPage == dot ? 22 : 8,
                         height: 8,
                         decoration: BoxDecoration(
                           color: currentPage == dot
-                              ? Colors.black
-                              : Colors.black26,
+                              ? colors.primary
+                              : colors.onSurface.withValues(alpha: 0.20),
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 32),
 
                   SizedBox(
                     width: double.infinity,
-                    height: 55,
-                    child: ElevatedButton(
+                    height: 56,
+                    child: FilledButton(
                       onPressed: nextPage,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      child: Text(
-                        page["button"],
-                        style: const TextStyle(
-                          fontSize: 16,
-                          letterSpacing: 1,
-                        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            page["button"]!,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          const Icon(Icons.arrow_forward_rounded),
+                        ],
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 24),
                 ],
               ),
             );
