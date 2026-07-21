@@ -112,7 +112,7 @@ class _MindfulDelayScreenState extends State<MindfulDelayScreen> {
                   style: AppTextStyles.body(context),
                 ),
 
-                const SizedBox(height: AppSpacing.xxl),
+                const SizedBox(height: AppSpacing.xl),
 
                 SizedBox(
                   width: double.infinity,
