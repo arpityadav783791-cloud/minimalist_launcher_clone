@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Minimalist Launcher</string>
+
+    <string name="accessibility_service_description">
+        Minimalist Launcher uses Accessibility to provide mindful delay, app blocking, focus mode, and productivity features.
+    </string>
+
+    <string name="accessibility_service_summary">
+        Enable Minimalist Launcher Accessibility Service
+    </string>
+
+</resources>

@@ -3,15 +3,58 @@ import 'package:minimalist_launcher_clone/screens/permissions/default_launcher_s
 import 'package:get/get.dart';
 import 'package:minimalist_launcher_clone/controllers/permission_controller.dart';
 
-class PermissionsScreen extends StatelessWidget {
+class PermissionsScreen extends StatefulWidget {
   const PermissionsScreen({super.key});
 
+  @override
+  State<PermissionsScreen> createState() => _PermissionsScreenState();
+}
+
+class _PermissionsScreenState extends State<PermissionsScreen> with WidgetsBindingObserver {
+  
+  late final PermissionController controller;
+
+  
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
+
+    controller = Get.put(PermissionController());
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+    _refreshPermissions();
+    }
+  }
+
+  Future<void> _refreshPermissions() async {
+    for (int i = 0; i < 10; i++) {
+      await controller.checkPermissions();
+
+      if (controller.usageGranted.value) {
+        break;
+      }
+
+      await Future.delayed(const Duration(milliseconds: 300));
+    }
+  }
+
+  @override   
+  void dispose(){
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+  
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
-    final PermissionController controller = Get.put(PermissionController());
-
+    
     final List<Map<String, dynamic>> permissions = [
       {
         "title": "Usage Access",
@@ -32,16 +75,6 @@ class PermissionsScreen extends StatelessWidget {
         "title": "Display Over Other Apps",
         "subtitle": "Required for launcher overlays and reminders.",
         "type": PermissionType.overlay,
-      },
-      {
-        "title": "Default Launcher",
-        "subtitle": "Set Minimalist Launcher as your default Home app.",
-        "type": PermissionType.launcher,
-      },
-      {
-        "title": "Battery Optimization",
-        "subtitle": "Prevent Android from stopping the launcher in the background.",
-        "type": PermissionType.battery,
       },
     ];
 
@@ -124,27 +157,41 @@ class PermissionsScreen extends StatelessWidget {
 
                         const SizedBox(width: 16),
 
-                        OutlinedButton(
-                          onPressed: () async {
-                            await controller.open(item["type"] as PermissionType);
-                          },
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 18,
-                              vertical: 14,
+                        Obx(() {
+                          final permissionType = item["type"] as PermissionType;
+                          final granted = controller.isGranted(permissionType);
+
+                          return OutlinedButton(
+                            onPressed: granted
+                                ? null
+                                : () async {
+                                    await controller.open(permissionType);
+                                  },
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 18,
+                                vertical: 14,
+                              ),
+                              side: BorderSide(
+                                color: granted
+                                    ? Colors.green
+                                    : colors.outline,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
                             ),
-                            side: BorderSide(
-                              color: colors.outline,
+                            child: Text(
+                              granted ? "Granted ✓" : "Grant",
+                              style: TextStyle(
+                                color: granted
+                                    ? Colors.green
+                                    : colors.onSurface,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                          ),
-                          child: Obx(() {
-                            final granted = controller.isGranted(PermissionType.usage);
-                            return Text(granted ? "Granted ✓" : "Grant");
-                          }),
-                        ),
+                          );
+                        }),
                       ],
                     );
                   },

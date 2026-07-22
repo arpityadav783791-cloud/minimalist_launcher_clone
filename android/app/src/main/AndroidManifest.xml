@@ -46,8 +46,8 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
-        <!--
-        Uncomment after creating your Accessibility Service.
+        
+        <!-- Uncomment after creating your Accessibility Service. -->
 
         <service
             android:name=".services.MinimalistAccessibilityService"
@@ -62,7 +62,6 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_config"/>
         </service>
-        -->
 
     </application>
 

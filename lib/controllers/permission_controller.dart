@@ -7,8 +7,6 @@ enum PermissionType {
   accessibility,
   notification,
   overlay,
-  launcher,
-  battery,
 }
 
 class PermissionController extends GetxController {
@@ -18,8 +16,6 @@ class PermissionController extends GetxController {
   final accessibilityGranted = false.obs;
   final notificationGranted = false.obs;
   final overlayGranted = false.obs;
-  final launcherGranted = false.obs;
-  final batteryGranted = false.obs;
 
   @override
   void onInit() {
@@ -35,10 +31,6 @@ class PermissionController extends GetxController {
         await _service.isNotificationGranted();
     overlayGranted.value =
         await _service.isOverlayGranted();
-    launcherGranted.value =
-        await _service.isDefaultLauncher();
-    batteryGranted.value =
-        await _service.isBatteryOptimizationDisabled();
   }
 
   Future<void> open(PermissionType permission) async {
@@ -58,19 +50,7 @@ class PermissionController extends GetxController {
       case PermissionType.overlay:
         await _service.openOverlayPermission();
         break;
-
-      case PermissionType.launcher:
-        await _service.openDefaultLauncherSettings();
-        break;
-
-      case PermissionType.battery:
-        await _service.openBatteryOptimizationSettings();
-        break;
     }
-
-    // Re-check after returning from Settings
-    await Future.delayed(const Duration(milliseconds: 500));
-    await checkPermissions();
   }
 
   bool isGranted(PermissionType type) {
@@ -86,12 +66,6 @@ class PermissionController extends GetxController {
 
       case PermissionType.overlay:
         return overlayGranted.value;
-
-      case PermissionType.launcher:
-        return launcherGranted.value;
-
-      case PermissionType.battery:
-        return batteryGranted.value;
     }
   }
 }
