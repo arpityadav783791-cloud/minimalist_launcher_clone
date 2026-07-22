@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minimalist_launcher_clone/screens/permissions/default_launcher_screen.dart';
+import 'package:get/get.dart';
+import 'package:minimalist_launcher_clone/controllers/permission_controller.dart';
 
 class PermissionsScreen extends StatelessWidget {
   const PermissionsScreen({super.key});
@@ -8,23 +10,38 @@ class PermissionsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
+    final PermissionController controller = Get.put(PermissionController());
 
-    final permissions = [
+    final List<Map<String, dynamic>> permissions = [
       {
         "title": "Usage Access",
         "subtitle": "Track your screen time and app usage.",
+        "type": PermissionType.usage,
       },
       {
         "title": "Accessibility",
         "subtitle": "Enable mindful delay, focus mode and app blocking.",
+        "type": PermissionType.accessibility,
       },
       {
         "title": "Notification Access",
         "subtitle": "Hide distracting notifications while staying productive.",
+        "type": PermissionType.notification,
       },
       {
         "title": "Display Over Other Apps",
         "subtitle": "Required for launcher overlays and reminders.",
+        "type": PermissionType.overlay,
+      },
+      {
+        "title": "Default Launcher",
+        "subtitle": "Set Minimalist Launcher as your default Home app.",
+        "type": PermissionType.launcher,
+      },
+      {
+        "title": "Battery Optimization",
+        "subtitle": "Prevent Android from stopping the launcher in the background.",
+        "type": PermissionType.battery,
       },
     ];
 
@@ -84,7 +101,7 @@ class PermissionsScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                item["title"]!,
+                                item["title"] as String,
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.w600,
                                   color: colors.onSurface,
@@ -94,7 +111,7 @@ class PermissionsScreen extends StatelessWidget {
                               const SizedBox(height: 8),
 
                               Text(
-                                item["subtitle"]!,
+                                item["subtitle"] as String,
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: colors.onSurface
                                       .withValues(alpha: 0.65),
@@ -108,8 +125,8 @@ class PermissionsScreen extends StatelessWidget {
                         const SizedBox(width: 16),
 
                         OutlinedButton(
-                          onPressed: () {
-                            // TODO: Open corresponding permission screen.
+                          onPressed: () async {
+                            await controller.open(item["type"] as PermissionType);
                           },
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(
@@ -123,7 +140,10 @@ class PermissionsScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(14),
                             ),
                           ),
-                          child: const Text("Grant"),
+                          child: Obx(() {
+                            final granted = controller.isGranted(PermissionType.usage);
+                            return Text(granted ? "Granted ✓" : "Grant");
+                          }),
                         ),
                       ],
                     );
