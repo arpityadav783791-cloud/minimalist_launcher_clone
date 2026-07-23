@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../services/permission_service.dart';
 
@@ -25,10 +26,13 @@ class PermissionController extends GetxController {
 
   Future<void> checkPermissions() async {
     usageGranted.value = await _service.isUsageAccessGranted();
+
     accessibilityGranted.value =
         await _service.isAccessibilityGranted();
+
     notificationGranted.value =
         await _service.isNotificationGranted();
+
     overlayGranted.value =
         await _service.isOverlayGranted();
   }
@@ -53,8 +57,8 @@ class PermissionController extends GetxController {
     }
   }
 
-  bool isGranted(PermissionType type) {
-    switch (type) {
+  bool isGranted(PermissionType permission) {
+    switch (permission) {
       case PermissionType.usage:
         return usageGranted.value;
 
@@ -67,5 +71,13 @@ class PermissionController extends GetxController {
       case PermissionType.overlay:
         return overlayGranted.value;
     }
+  }
+
+  Future<void> openDefaultLauncher()async{
+    await _service.openDefaultLauncherSettings();
+  }
+
+  Future<bool> isDefaultLauncher() async {
+    return await _service.isDefaultLauncher();
   }
 }

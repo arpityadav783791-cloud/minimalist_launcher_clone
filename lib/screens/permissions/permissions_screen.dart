@@ -208,7 +208,7 @@ class _PermissionsScreenState extends State<PermissionsScreen> with WidgetsBindi
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const DefaultLauncherScreen(),
+                        builder: (_) => DefaultLauncherScreen(),
                       ),
                     );
                   },

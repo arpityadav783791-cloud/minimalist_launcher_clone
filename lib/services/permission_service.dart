@@ -27,10 +27,10 @@ class PermissionService {
 
   Future<void> openOverlayPermission() async {
     const AndroidIntent(
-      action: 'android.settings.MANAGE_OVERLAY_PERMISSION',
+      action: 'android.settings.action.MANAGE_OVERLAY_PERMISSION',
+      data: 'package:com.example.minimalist_launcher_clone',
     ).launch();
   }
-
   Future<void> openDefaultLauncherSettings() async {
     const AndroidIntent(
       action: 'android.settings.HOME_SETTINGS',
@@ -58,29 +58,24 @@ class PermissionService {
         ) ??
         false;
   }
-
-  Future<bool> isOverlayGranted() async {
-    return await _channel.invokeMethod<bool>(
-          'isOverlayGranted',
-        ) ??
-        false;
-  }
-
-  Future<bool> isBatteryOptimizationDisabled() async {
-    return await _channel.invokeMethod<bool>(
-          'isBatteryOptimizationDisabled',
-        ) ??
-        false;
-  }
-
-  // Temporary placeholders.
-  // We'll implement these natively in the next step.
-
   Future<bool> isNotificationGranted() async {
-    return false;
+    return await _channel.invokeMethod<bool>(
+          'isNotificationGranted',
+        ) ??
+        false;
   }
 
-  Future<bool> isDefaultLauncher() async {
-    return false;
+  Future <bool> isOverlayGranted() async{
+    return await _channel.invokeMethod<bool>(
+      'isOverlayGranted',
+    )??
+    false;
+  }
+
+  Future <bool> isDefaultLauncher()async{
+    return await _channel.invokeMethod<bool>(
+      'isDefaultLauncher',
+    ) ??
+    false;
   }
 }

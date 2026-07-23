@@ -1,14 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:minimalist_launcher_clone/controllers/permission_controller.dart';
 import 'package:minimalist_launcher_clone/screens/launcher/home_screen.dart';
+import 'package:get/get.dart';
 
-class DefaultLauncherScreen extends StatelessWidget {
-  const DefaultLauncherScreen({super.key});
+class DefaultLauncherScreen extends StatefulWidget {
+  DefaultLauncherScreen({super.key});
+
+  @override
+  State<DefaultLauncherScreen> createState() => _DefaultLauncherScreenState();
+}
+
+class _DefaultLauncherScreenState extends State<DefaultLauncherScreen> with WidgetsBindingObserver{
+  final PermissionController controller = Get.find<PermissionController>();
+
+  @override
+  void initState(){
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose(){
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      final isDefault = await controller.isDefaultLauncher();
+
+      if (isDefault && mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const HomeScreen(),
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
-
+    
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
@@ -54,7 +91,7 @@ class DefaultLauncherScreen extends StatelessWidget {
                 height: 56,
                 child: FilledButton(
                   onPressed: () {
-                    // TODO: Open Default Launcher Settings
+                    controller.openDefaultLauncher();
                   },
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,

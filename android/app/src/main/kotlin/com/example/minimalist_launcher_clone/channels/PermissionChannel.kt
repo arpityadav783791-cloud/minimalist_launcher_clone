@@ -8,6 +8,8 @@ import android.os.PowerManager
 import android.provider.Settings
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import android.content.Intent
+import android.content.pm.PackageManager
 
 class PermissionChannel(
     private val context: Context
@@ -28,12 +30,16 @@ class PermissionChannel(
                 result.success(isAccessibilityGranted())
             }
 
+            "isNotificationGranted" -> {
+                result.success(isNotificationGranted())
+            }
+
             "isOverlayGranted" -> {
                 result.success(Settings.canDrawOverlays(context))
             }
 
-            "isBatteryOptimizationDisabled" -> {
-                result.success(isIgnoringBatteryOptimization())
+            "isDefaultLauncher" -> {
+                result.success(isDefaultLauncher())
             }
 
             else -> result.notImplemented()
@@ -87,5 +93,28 @@ class PermissionChannel(
         return powerManager.isIgnoringBatteryOptimizations(
             context.packageName
         )
+    }
+
+    private fun isNotificationGranted(): Boolean {
+
+        val enabledListeners = Settings.Secure.getString(
+            context.contentResolver,
+            "enabled_notification_listeners"
+        ) ?: return false
+
+        return enabledListeners.contains(context.packageName)
+    }
+
+    private fun isDefaultLauncher(): Boolean {
+        val intent = Intent(Intent.ACTION_MAIN).apply {
+            addCategory(Intent.CATEGORY_HOME)
+        }
+
+        val resolveInfo = context.packageManager.resolveActivity(
+            intent,
+            PackageManager.MATCH_DEFAULT_ONLY
+        )
+
+        return resolveInfo?.activityInfo?.packageName == context.packageName
     }
 }
