@@ -1,6 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:minimalist_launcher_clone/controllers/permission_controller.dart';
+import 'package:minimalist_launcher_clone/screens/launcher/home_screen.dart';
 import 'package:minimalist_launcher_clone/screens/onboarding/onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -14,17 +15,46 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-
-    Timer(const Duration(seconds: 2), () {
-      Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const OnboardingScreen(),
-  ),
-);
-    });
+    _navigate();
   }
 
+  Future<void> _navigate() async {
+  debugPrint("Splash: Started");
+
+  await Future.delayed(const Duration(seconds: 2));
+  debugPrint("Splash: Delay complete");
+
+  try {
+    final controller = Get.find<PermissionController>();
+    debugPrint("Splash: Controller found");
+
+    final isDefaultLauncher = await controller.isDefaultLauncher();
+    debugPrint("Splash: isDefaultLauncher = $isDefaultLauncher");
+
+    if (!mounted) return;
+
+    if (isDefaultLauncher) {
+      debugPrint("Splash: Going to Home");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const HomeScreen(),
+        ),
+      );
+    } else {
+      debugPrint("Splash: Going to Onboarding");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const OnboardingScreen(),
+        ),
+      );
+    }
+  } catch (e, stack) {
+    debugPrint("Splash Error: $e");
+    debugPrint("$stack");
+  }
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(

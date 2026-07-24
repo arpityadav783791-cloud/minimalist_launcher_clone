@@ -8,6 +8,7 @@ enum PermissionType {
   accessibility,
   notification,
   overlay,
+  defaultLauncher
 }
 
 class PermissionController extends GetxController {
@@ -17,6 +18,7 @@ class PermissionController extends GetxController {
   final accessibilityGranted = false.obs;
   final notificationGranted = false.obs;
   final overlayGranted = false.obs;
+  final defaultLauncherGranted = false.obs;
 
   @override
   void onInit() {
@@ -35,6 +37,9 @@ class PermissionController extends GetxController {
 
     overlayGranted.value =
         await _service.isOverlayGranted();
+
+    defaultLauncherGranted.value =
+        await _service.isDefaultLauncher();
   }
 
   Future<void> open(PermissionType permission) async {
@@ -54,6 +59,11 @@ class PermissionController extends GetxController {
       case PermissionType.overlay:
         await _service.openOverlayPermission();
         break;
+
+      case PermissionType.defaultLauncher:
+        await _service.openDefaultLauncherSettings();
+        break;
+      
     }
   }
 
@@ -70,6 +80,9 @@ class PermissionController extends GetxController {
 
       case PermissionType.overlay:
         return overlayGranted.value;
+
+      case PermissionType.defaultLauncher:
+        return defaultLauncherGranted.value;
     }
   }
 

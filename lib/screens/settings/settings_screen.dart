@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:minimalist_launcher_clone/screens/settings/screens_in_setting_screen/about_screen.dart';
 
 import 'package:minimalist_launcher_clone/theme/app_colors.dart';
 import 'package:minimalist_launcher_clone/theme/app_spacing.dart';
@@ -7,7 +8,8 @@ import 'package:minimalist_launcher_clone/theme/app_text_styles.dart';
 
 import '../launcher/hide_app_screen.dart';
 import '../themes/themes_screen.dart';
-import 'about_screen.dart';
+
+import 'package:minimalist_launcher_clone/screens/settings/screens_in_setting_screen/permissions_screen_in_setting.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -66,18 +68,19 @@ class SettingsScreen extends StatelessWidget {
 
           _tile(
             context,
-            icon: Icons.apps_outlined,
-            title: "Default Launcher",
-            onTap: () {},
-          ),
-
-          _divider(context),
-
-          _tile(
-            context,
             icon: Icons.security_outlined,
             title: "Permissions",
-            onTap: () {},
+            onTap: () {
+              // print("Permissions tapped");
+
+              try {
+                Get.to(() => const PermissionsScreenInSetting());
+                // print("Navigation called");
+              } catch (e, s) {
+                // print(e);
+                // print(s);
+              }
+            }
           ),
 
           const SizedBox(height: AppSpacing.md),

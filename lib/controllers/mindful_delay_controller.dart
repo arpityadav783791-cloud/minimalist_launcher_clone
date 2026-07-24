@@ -1,58 +1,154 @@
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/mindful_delay_rule.dart';
+import '../services/mindful_delay_storage.dart';
 
 class MindfulDelayController extends GetxController {
-  final enabled = false.obs;
-  final delaySeconds = 5.obs;
-  final delayedApps = <String>{}.obs;
+  /// packageName -> Rule
+  final RxMap<String, MindfulDelayRule> rules =
+      <String, MindfulDelayRule>{}.obs;
 
   @override
   void onInit() {
     super.onInit();
-    loadSettings();
+    loadRules();
   }
 
-  Future<void> loadSettings() async {
-    final prefs = await SharedPreferences.getInstance();
+  Future<void> loadRules() async {
+    final loaded = await MindfulDelayStorage.loadRules();
 
-    enabled.value = prefs.getBool('mindful_enabled') ?? false;
-    delaySeconds.value = prefs.getInt('mindful_delay') ?? 5;
+    rules.assignAll(loaded);
 
-    delayedApps.addAll(
-      prefs.getStringList('mindful_apps') ?? [],
-    );
+    _applyScheduledDisables();
   }
 
-  Future<void> toggleEnabled(bool value) async {
-    enabled.value = value;
-
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('mindful_enabled', value);
+  Future<void> _save() async {
+    await MindfulDelayStorage.saveRules(rules);
   }
 
-  Future<void> setDelay(int seconds) async {
-    delaySeconds.value = seconds;
-
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('mindful_delay', seconds);
+  /// Returns rule for an app if it exists
+  MindfulDelayRule? getRule(String packageName) {
+    return rules[packageName];
   }
 
-  Future<void> toggleApp(String packageName) async {
-    if (delayedApps.contains(packageName)) {
-      delayedApps.remove(packageName);
-    } else {
-      delayedApps.add(packageName);
+  /// True if this app should show mindful delay
+  bool shouldShowDelay(String packageName) {
+    final rule = rules[packageName];
+
+    if (rule == null) return false;
+
+    if (!rule.enabled) return false;
+
+    if (rule.shouldDisableNow) {
+      disableImmediately(packageName);
+      return false;
     }
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(
-      'mindful_apps',
-      delayedApps.toList(),
-    );
+    return true;
   }
 
-  bool shouldDelay(String packageName) {
-    return enabled.value &&
-        delayedApps.contains(packageName);
+  /// Create or update delay
+  Future<void> setDelay({
+    required String packageName,
+    required int delaySeconds,
+  }) async {
+    final existing = rules[packageName];
+
+    if (existing != null) {
+      existing.enabled = true;
+      existing.delaySeconds = delaySeconds;
+      existing.scheduledDisableAt = null;
+    } else {
+      rules[packageName] = MindfulDelayRule(
+        packageName: packageName,
+        enabled: true,
+        delaySeconds: delaySeconds,
+      );
+    }
+
+    rules.refresh();
+
+    await _save();
+  }
+
+  /// Schedule disable after 48 hours
+  Future<void> scheduleDisable(
+    String packageName,
+  ) async {
+    final rule = rules[packageName];
+
+    if (rule == null) return;
+
+    rule.scheduledDisableAt =
+        DateTime.now().add(const Duration(hours: 48));
+
+    rules.refresh();
+
+    await _save();
+  }
+
+  /// Cancel scheduled disable
+  Future<void> cancelScheduledDisable(
+    String packageName,
+  ) async {
+    final rule = rules[packageName];
+
+    if (rule == null) return;
+
+    rule.scheduledDisableAt = null;
+
+    rules.refresh();
+
+    await _save();
+  }
+
+  /// Disable immediately
+  Future<void> disableImmediately(
+    String packageName,
+  ) async {
+    final rule = rules[packageName];
+
+    if (rule == null) return;
+
+    rule.enabled = false;
+    rule.scheduledDisableAt = null;
+
+    rules.refresh();
+
+    await _save();
+  }
+
+  /// Enable again
+  Future<void> enable(
+    String packageName,
+  ) async {
+    final rule = rules[packageName];
+
+    if (rule == null) return;
+
+    rule.enabled = true;
+    rule.scheduledDisableAt = null;
+
+    rules.refresh();
+
+    await _save();
+  }
+
+  /// Remove expired scheduled disables
+  Future<void> _applyScheduledDisables() async {
+    bool changed = false;
+
+    for (final rule in rules.values) {
+      if (rule.shouldDisableNow) {
+        rule.enabled = false;
+        rule.scheduledDisableAt = null;
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      rules.refresh();
+      await _save();
+    }
   }
 }
